@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::body})}">
+
+<body>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">👨‍🏫 Gestion des Enseignants</h2>
+    <a class="btn btn-primary" th:href="@{/admin/teachers/new}">+ Nouvel enseignant</a>
+  </div>
+
+  <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Grade</th>
+            <th>Spécialité</th>
+            <th>Compétences</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr th:each="t : ${teachers}">
+            <td th:text="${t.id}">1</td>
+
+            <td th:text="${t.user != null ? t.user.email : ''}">email</td>
+
+            <td th:text="${t.grade}">grade</td>
+            <td th:text="${t.specialite}">spec</td>
+            <td th:text="${t.competences}">comp</td>
+
+            <td class="d-flex gap-2 flex-wrap">
+              <a class="btn btn-sm btn-outline-secondary"
+                 th:href="@{/admin/teachers/{id}/edit(id=${t.id})}">Modifier</a>
+
+              <form th:action="@{/admin/teachers/{id}/delete(id=${t.id})}"
+                    method="post"
+                    onsubmit="return confirm('Supprimer cet enseignant ?');">
+                <!-- CSRF (si Spring Security activé) -->
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(teachers)}">
+            <td colspan="6" class="text-center text-muted">Aucun enseignant</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

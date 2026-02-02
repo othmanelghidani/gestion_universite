@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: layout(~{::section})">
+
+<section>
+  <h2 class="h4 mb-3" th:text="${mode == 'edit'} ? '✏️ Modifier Groupe' : '➕ Créer Groupe'"></h2>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <form th:object="${groupDto}"
+            th:action="${mode == 'edit'} ? @{/admin/groups/{id}(id=${groupDto.id})} : @{/admin/groups}"
+            method="post" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Nom</label>
+          <input class="form-control" th:field="*{name}">
+          <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-success" type="submit">Enregistrer</button>
+          <a class="btn btn-secondary" th:href="@{/admin/groups}">Annuler</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>
+
+</html>

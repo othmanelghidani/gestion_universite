@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: layout(~{::section})">
+
+<section>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h1 class="h4 mb-3">🏫 <span th:text="${appName}">UniversityGest</span></h1>
+
+      <div class="alert alert-success" role="alert">
+        <strong th:text="${message}">OK</strong>
+      </div>
+
+      <p class="text-muted mb-0">
+        Page de test : route <code>/</code> via Thymeleaf.
+      </p>
+    </div>
+  </div>
+</section>
+
+</html>

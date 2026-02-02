@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: layout(~{::section})">
+
+<section>
+  <div class="mb-3">
+    <h2 class="h4" th:text="${mode == 'edit'} ? '✏️ Modifier Étudiant' : '➕ Créer Étudiant'"></h2>
+  </div>
+
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <form th:object="${studentDto}"
+            th:action="${mode == 'edit'} ? @{/admin/students/{id}(id=${studentDto.id})} : @{/admin/students}"
+            method="post" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input class="form-control" type="email" th:field="*{email}">
+          <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">
+            Mot de passe
+            <span class="text-muted" th:if="${mode=='edit'}">(laisser vide pour ne pas changer)</span>
+          </label>
+          <input class="form-control" type="password" th:field="*{password}">
+          <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Filière</label>
+          <input class="form-control" th:field="*{filiere}">
+          <div class="text-danger small" th:if="${#fields.hasErrors('filiere')}" th:errors="*{filiere}"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Niveau</label>
+          <input class="form-control" th:field="*{niveau}">
+          <div class="text-danger small" th:if="${#fields.hasErrors('niveau')}" th:errors="*{niveau}"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Groupe</label>
+          <input class="form-control" th:field="*{groupe}">
+          <div class="text-danger small" th:if="${#fields.hasErrors('groupe')}" th:errors="*{groupe}"></div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Compétences (optionnel)</label>
+          <textarea class="form-control" rows="3" th:field="*{competences}"
+                    placeholder="Ex: Java, Spring, SQL"></textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-success" type="submit">Enregistrer</button>
+          <a class="btn btn-secondary" th:href="@{/admin/students}">Annuler</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</section>
+
+</html>

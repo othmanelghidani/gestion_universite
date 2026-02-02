@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout/base :: layout(~{::body})}">
+
+<body>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0"
+        th:text="${mode == 'edit'} ? '✏️ Modifier Enseignant' : '➕ Nouvel Enseignant'"></h2>
+    <a class="btn btn-outline-secondary" th:href="@{/admin/teachers}">Retour</a>
+  </div>
+
+  <!-- tu utilisais errorMessage dans le controller -->
+  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form th:object="${teacherDto}"
+            th:action="${mode == 'edit'} ? @{/admin/teachers/{id}(id=${teacherDto.id})} : @{/admin/teachers}"
+            method="post" class="row g-3">
+
+        <!-- CSRF (si Spring Security activé) -->
+        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input class="form-control" th:field="*{email}" placeholder="ex: prof@univ.local">
+          <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Mot de passe</label>
+          <input type="password" class="form-control" th:field="*{password}"
+                 placeholder="(laisser vide en modification si tu as prévu ça)">
+          <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Grade</label>
+          <input class="form-control" th:field="*{grade}" placeholder="ex: Professeur, Maitre de conf...">
+          <div class="text-danger small" th:if="${#fields.hasErrors('grade')}" th:errors="*{grade}"></div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Spécialité</label>
+          <input class="form-control" th:field="*{specialite}" placeholder="ex: IA, Réseaux, Maths...">
+          <div class="text-danger small" th:if="${#fields.hasErrors('specialite')}" th:errors="*{specialite}"></div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Compétences</label>
+          <textarea class="form-control" th:field="*{competences}" rows="3"
+                    placeholder="ex: Java, Spring, Sécurité..."></textarea>
+          <div class="text-danger small" th:if="${#fields.hasErrors('competences')}" th:errors="*{competences}"></div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button type="submit" class="btn btn-success">Enregistrer</button>
+          <a class="btn btn-secondary" th:href="@{/admin/teachers}">Annuler</a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: layout(~{::section})">
+
+<section>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">📚 Gestion des Modules</h2>
+    <a class="btn btn-primary" th:href="@{/admin/modules/new}">+ Nouveau module</a>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped align-middle">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Filière</th>
+            <th>Semestre</th>
+            <th>VH</th>
+            <th>Responsable (email)</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+
+          <tbody>
+          <tr th:each="m : ${modules}">
+            <td th:text="${m.id}"></td>
+            <td th:text="${m.name}"></td>
+            <td th:text="${m.filiere}"></td>
+            <td th:text="${m.semestre}"></td>
+            <td th:text="${m.volumeHoraire}"></td>
+
+            <td>
+              <span th:if="${m.responsibleTeacherEmail != null}"
+                    th:text="${m.responsibleTeacherEmail}"></span>
+              <span th:if="${m.responsibleTeacherEmail == null}" class="text-muted">—</span>
+            </td>
+
+            <td class="d-flex gap-2 flex-wrap">
+              <a class="btn btn-sm btn-outline-secondary"
+                 th:href="@{/admin/modules/{id}/edit(id=${m.id})}">Modifier</a>
+
+              <a class="btn btn-sm btn-outline-primary"
+                 th:href="@{/admin/modules/{id}/groups(id=${m.id})}">
+                Groupes
+              </a>
+
+              <form th:action="@{/admin/modules/{id}/delete(id=${m.id})}"
+                    method="post"
+                    onsubmit="return confirm('Supprimer ce module ?');">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
+              </form>
+            </td>
+          </tr>
+
+          <tr th:if="${#lists.isEmpty(modules)}">
+            <td colspan="7" class="text-center text-muted">Aucun module</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: layout(~{::section})">
+
+<section>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">👥 Gestion des Groupes</h2>
+    <a class="btn btn-primary" th:href="@{/admin/groups/new}">+ Nouveau groupe</a>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <table class="table table-striped align-middle">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nom</th>
+          <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="g : ${groups}">
+          <td th:text="${g.id}"></td>
+          <td th:text="${g.name}"></td>
+          <td class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-secondary"
+               th:href="@{/admin/groups/{id}/edit(id=${g.id})}">Modifier</a>
+
+            <form th:action="@{/admin/groups/{id}/delete(id=${g.id})}"
+                  method="post"
+                  onsubmit="return confirm('Supprimer ce groupe ?');">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+
+        <tr th:if="${#lists.isEmpty(groups)}">
+          <td colspan="3" class="text-center text-muted">Aucun groupe</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+</html>

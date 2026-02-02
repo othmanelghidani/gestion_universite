@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: layout(~{::section})">
+
+<section>
+  <div class="d-flex justify-content-between mb-3">
+    <h2 class="h4">🏫 Salles</h2>
+    <a class="btn btn-primary" th:href="@{/admin/rooms/new}">+ Nouvelle salle</a>
+  </div>
+
+  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="r : ${rooms}">
+        <td th:text="${r.id}"></td>
+        <td th:text="${r.name}"></td>
+        <td>
+          <form th:action="@{/admin/rooms/{id}/delete(id=${r.id})}" method="post">
+            <button class="btn btn-sm btn-danger">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+
+      <tr th:if="${#lists.isEmpty(rooms)}">
+        <td colspan="3" class="text-muted text-center">Aucune salle</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+</html>

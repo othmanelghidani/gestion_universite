@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout/base :: layout(~{::section})">
+
+<section>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0" th:text="${mode == 'edit'} ? '✏️ Modifier Module' : '➕ Nouveau Module'"></h2>
+    <a class="btn btn-outline-secondary" th:href="@{/admin/modules}">Retour</a>
+  </div>
+
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <form th:object="${moduleDto}"
+            th:action="${mode == 'edit'} ? @{/admin/modules/{id}(id=${moduleDto.id})} : @{/admin/modules}"
+            method="post" class="row g-3">
+
+        <div class="col-md-6">
+          <label class="form-label">Nom</label>
+          <input class="form-control" th:field="*{name}" placeholder="Ex: Programmation Java">
+          <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Filière</label>
+          <input class="form-control" th:field="*{filiere}" placeholder="Ex: Big Data / IA">
+          <div class="text-danger small" th:if="${#fields.hasErrors('filiere')}" th:errors="*{filiere}"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Semestre</label>
+          <input class="form-control" th:field="*{semestre}" placeholder="Ex: S2">
+          <div class="text-danger small" th:if="${#fields.hasErrors('semestre')}" th:errors="*{semestre}"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Volume horaire</label>
+          <input type="number" min="0" class="form-control" th:field="*{volumeHoraire}" placeholder="Ex: 30">
+          <div class="text-danger small" th:if="${#fields.hasErrors('volumeHoraire')}" th:errors="*{volumeHoraire}"></div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Responsable (Enseignant)</label>
+          <select class="form-select" th:field="*{responsibleTeacherId}">
+            <option value="">— Aucun —</option>
+            <option th:each="t : ${teachers}"
+                    th:value="${t.id}"
+                    th:text="${t.user != null ? t.user.email : ('Teacher #' + t.id)}">
+            </option>
+          </select>
+          <div class="text-danger small" th:if="${#fields.hasErrors('responsibleTeacherId')}" th:errors="*{responsibleTeacherId}"></div>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Compétences requises</label>
+          <textarea class="form-control" rows="4" th:field="*{competencesRequises}"
+                    placeholder="Ex: POO, Collections, Streams..."></textarea>
+          <div class="text-danger small" th:if="${#fields.hasErrors('competencesRequises')}" th:errors="*{competencesRequises}"></div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-success" type="submit">Enregistrer</button>
+          <a class="btn btn-secondary" th:href="@{/admin/modules}">Annuler</a>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</section>
+
+</html>
