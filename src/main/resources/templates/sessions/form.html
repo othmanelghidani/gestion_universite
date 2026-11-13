@@ -1,86 +1,188 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      th:replace="~{layout/base :: layout(~{::body})}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Séance - Formulaire</title>
 
-<body>
-  <h2 class="h4 mb-3" th:text="${mode == 'edit'} ? '✏️ Modifier Séance' : '➕ Créer Séance'"></h2>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+  <script>
+    tailwind.config = { theme: { extend: { colors: { gold: '#bfa76a' } } } }
+  </script>
+</head>
+
+<body class="min-h-screen bg-[#0a0a0a] text-neutral-200 p-8">
+
+<div class="max-w-5xl mx-auto space-y-6">
+
+  <!-- Header -->
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-medium tracking-wide flex items-center gap-2">
+        <i class="bi bi-calendar2-plus text-gold"></i>
+        <span th:text="${mode == 'edit'} ? 'Modifier Séance' : 'Créer Séance'"></span>
+      </h2>
+      <p class="text-sm text-neutral-500 mt-1">
+        Choisis jour, heures, salle, module, groupe et enseignant. Les conflits seront détectés automatiquement.
+      </p>
+    </div>
+
+    <a th:href="@{/admin/sessions}"
+       class="inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium
+              bg-white/5 border border-white/10 text-neutral-300
+              hover:border-gold hover:text-gold hover:bg-gold/5
+              transition-all duration-300">
+      <i class="bi bi-arrow-left"></i>
+      Retour
+    </a>
+  </div>
+
+  <!-- Error -->
+  <div th:if="${error}"
+       class="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-300 flex gap-2">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span th:text="${error}"></span>
+  </div>
+
+  <!-- Card -->
+  <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden">
+    <div class="p-6">
 
       <form th:object="${sessionDto}"
             th:action="${mode == 'edit'} ? @{/admin/sessions/{id}(id=${sessionDto.id})} : @{/admin/sessions}"
-            method="post" class="row g-3">
+            method="post"
+            class="grid grid-cols-1 md:grid-cols-12 gap-5">
 
-        <!-- CSRF (si Spring Security activé) -->
+        <!-- CSRF -->
         <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 
-        <div class="col-md-3">
-          <label class="form-label">Jour (1=Lun … 7=Dim)</label>
-          <input type="number" min="1" max="7" class="form-control" th:field="*{dayOfWeek}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('dayOfWeek')}" th:errors="*{dayOfWeek}"></div>
+        <!-- Jour -->
+        <div class="md:col-span-3">
+          <label class="block text-sm text-neutral-400 mb-2">Jour (1=Lun … 7=Dim)</label>
+          <input type="number" min="1" max="7" th:field="*{dayOfWeek}"
+                 class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                        text-neutral-100 outline-none
+                        focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+          <div class="mt-2 text-xs text-red-300"
+               th:if="${#fields.hasErrors('dayOfWeek')}" th:errors="*{dayOfWeek}"></div>
         </div>
 
-        <div class="col-md-3">
-          <label class="form-label">Heure début (HH:MM)</label>
-          <input class="form-control" placeholder="08:30" th:field="*{startTime}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></div>
+        <!-- Début -->
+        <div class="md:col-span-3">
+          <label class="block text-sm text-neutral-400 mb-2">Heure début (HH:MM)</label>
+          <input th:field="*{startTime}" placeholder="08:30"
+                 class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                        text-neutral-100 placeholder-neutral-600 outline-none
+                        focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+          <div class="mt-2 text-xs text-red-300"
+               th:if="${#fields.hasErrors('startTime')}" th:errors="*{startTime}"></div>
         </div>
 
-        <div class="col-md-3">
-          <label class="form-label">Heure fin (HH:MM)</label>
-          <input class="form-control" placeholder="10:00" th:field="*{endTime}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></div>
+        <!-- Fin -->
+        <div class="md:col-span-3">
+          <label class="block text-sm text-neutral-400 mb-2">Heure fin (HH:MM)</label>
+          <input th:field="*{endTime}" placeholder="10:00"
+                 class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                        text-neutral-100 placeholder-neutral-600 outline-none
+                        focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+          <div class="mt-2 text-xs text-red-300"
+               th:if="${#fields.hasErrors('endTime')}" th:errors="*{endTime}"></div>
         </div>
 
-        <div class="col-md-3">
-          <label class="form-label">Salle</label>
-          <select class="form-select" th:field="*{roomId}">
+        <!-- Salle -->
+        <div class="md:col-span-3">
+          <label class="block text-sm text-neutral-400 mb-2">Salle</label>
+          <select th:field="*{roomId}"
+                  class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                         text-neutral-100 outline-none
+                         focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
             <option value="">— Choisir —</option>
             <option th:each="r : ${rooms}" th:value="${r.id}"
                     th:text="${r.name != null ? r.name : ('Salle #' + r.id)}"></option>
           </select>
-          <div class="text-danger small" th:if="${#fields.hasErrors('roomId')}" th:errors="*{roomId}"></div>
+          <div class="mt-2 text-xs text-red-300"
+               th:if="${#fields.hasErrors('roomId')}" th:errors="*{roomId}"></div>
         </div>
 
-        <div class="col-md-4">
-          <label class="form-label">Module</label>
-          <select class="form-select" th:field="*{moduleId}">
+        <!-- Module -->
+        <div class="md:col-span-4">
+          <label class="block text-sm text-neutral-400 mb-2">Module</label>
+          <select th:field="*{moduleId}"
+                  class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                         text-neutral-100 outline-none
+                         focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
             <option value="">— Choisir —</option>
             <option th:each="m : ${modules}" th:value="${m.id}" th:text="${m.name}"></option>
           </select>
-          <div class="text-danger small" th:if="${#fields.hasErrors('moduleId')}" th:errors="*{moduleId}"></div>
+          <div class="mt-2 text-xs text-red-300"
+               th:if="${#fields.hasErrors('moduleId')}" th:errors="*{moduleId}"></div>
         </div>
 
-        <div class="col-md-4">
-          <label class="form-label">Groupe</label>
-          <select class="form-select" th:field="*{groupId}">
+        <!-- Groupe -->
+        <div class="md:col-span-4">
+          <label class="block text-sm text-neutral-400 mb-2">Groupe</label>
+          <select th:field="*{groupId}"
+                  class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                         text-neutral-100 outline-none
+                         focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
             <option value="">— Choisir —</option>
             <option th:each="g : ${groups}" th:value="${g.id}"
                     th:text="${g.name != null ? g.name : ('Groupe #' + g.id)}"></option>
           </select>
-          <div class="text-danger small" th:if="${#fields.hasErrors('groupId')}" th:errors="*{groupId}"></div>
+          <div class="mt-2 text-xs text-red-300"
+               th:if="${#fields.hasErrors('groupId')}" th:errors="*{groupId}"></div>
         </div>
 
-        <div class="col-md-4">
-          <label class="form-label">Enseignant</label>
-          <select class="form-select" th:field="*{teacherId}">
+        <!-- Enseignant (email + grade si dispo) -->
+        <div class="md:col-span-4">
+          <label class="block text-sm text-neutral-400 mb-2">Enseignant</label>
+          <select th:field="*{teacherId}"
+                  class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                         text-neutral-100 outline-none
+                         focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
             <option value="">— Choisir —</option>
-            <option th:each="t : ${teachers}" th:value="${t.id}"
-                    th:text="${t.user != null ? t.user.email : ('Teacher #' + t.id)}"></option>
+            <option th:each="t : ${teachers}"
+                    th:value="${t.id}"
+                    th:text="${t.user != null ? (t.user.email + (t.grade != null ? (' — ' + t.grade) : '')) : ('Teacher #' + t.id)}">
+            </option>
           </select>
-          <div class="text-danger small" th:if="${#fields.hasErrors('teacherId')}" th:errors="*{teacherId}"></div>
+          <div class="mt-2 text-xs text-red-300"
+               th:if="${#fields.hasErrors('teacherId')}" th:errors="*{teacherId}"></div>
         </div>
 
-        <div class="col-12 d-flex gap-2">
-          <button class="btn btn-success" type="submit">Enregistrer</button>
-          <a class="btn btn-secondary" th:href="@{/admin/sessions}">Annuler</a>
+        <!-- Actions -->
+        <div class="md:col-span-12 flex flex-wrap gap-3 pt-2">
+          <button type="submit"
+                  class="group inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium
+                         bg-white/5 border border-white/10 text-neutral-200
+                         transition-all duration-300
+                         hover:border-gold hover:text-gold hover:bg-gold/5
+                         hover:shadow-[0_0_20px_rgba(191,167,106,0.15)]
+                         active:scale-[0.98]">
+            <i class="bi bi-check2-circle transition-transform duration-300 group-hover:scale-110"></i>
+            Enregistrer
+          </button>
+
+          <a th:href="@{/admin/sessions}"
+             class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium
+                    border border-white/10 text-neutral-300
+                    hover:border-gold hover:text-gold hover:bg-gold/5
+                    transition-all duration-300">
+            <i class="bi bi-x-circle"></i>
+            Annuler
+          </a>
         </div>
 
       </form>
     </div>
   </div>
+
+</div>
+
 </body>
 </html>

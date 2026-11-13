@@ -1,21 +1,81 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accueil - University Gest</title>
 
-<section>
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <h1 class="h4 mb-3">🏫 <span th:text="${appName}">UniversityGest</span></h1>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-      <div class="alert alert-success" role="alert">
-        <strong th:text="${message}">OK</strong>
-      </div>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-      <p class="text-muted mb-0">
-        Page de test : route <code>/</code> via Thymeleaf.
-      </p>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#d4af37'
+                    },
+                    boxShadow: {
+                        gold: '0 0 20px rgba(212,175,55,0.25)'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen bg-black text-neutral-100 overflow-x-hidden">
+
+<!-- Background premium -->
+<div class="fixed inset-0 -z-10">
+    <div class="absolute inset-0 bg-gradient-to-br from-black via-neutral-950 to-black"></div>
+    <div class="absolute -top-32 -left-32 h-96 w-96 rounded-full bg-gold/5 blur-3xl"></div>
+    <div class="absolute top-40 -right-32 h-96 w-96 rounded-full bg-gold/5 blur-3xl"></div>
+    <div class="absolute bottom-0 left-1/2 -translate-x-1/2 h-80 w-[40rem] rounded-full bg-gold/5 blur-3xl"></div>
+</div>
+
+<div class="min-h-screen flex items-center justify-center px-6">
+    <div class="max-w-3xl text-center">
+
+        <!-- Logo -->
+        <div class="flex justify-center mb-6">
+            <div class="h-16 w-16 rounded-2xl bg-white/5 border border-gold/20 flex items-center justify-center shadow-gold">
+                <i class="bi bi-mortarboard-fill text-3xl text-gold"></i>
+            </div>
+        </div>
+
+        <!-- Titre -->
+        <h1 class="text-4xl font-bold tracking-wide mb-4 text-gold">
+            <span th:text="${appName}">UniversityGest</span>
+        </h1>
+
+        <!-- Description -->
+        <p class="text-neutral-400 text-lg leading-relaxed mb-10">
+            Une plateforme universitaire haut de gamme dédiée à la gestion intelligente
+            des enseignants, étudiants, modules, groupes et emplois du temps,
+            avec un système sécurisé par rôles et une expérience moderne.
+        </p>
+
+        <!-- Message backend conservé -->
+        
+
+        <!-- Bouton Login premium -->
+        <div class="flex justify-center">
+            <a th:href="@{/login}"
+               class="group inline-flex items-center gap-3 px-8 py-3 rounded-xl font-semibold
+                      border border-gold text-gold
+                      hover:bg-gold hover:text-black
+                      transition duration-300 shadow-gold">
+                <i class="bi bi-box-arrow-in-right transition group-hover:translate-x-1"></i>
+                Accéder à la plateforme
+            </a>
+        </div>
+
     </div>
-  </div>
-</section>
+</div>
 
+</body>
 </html>

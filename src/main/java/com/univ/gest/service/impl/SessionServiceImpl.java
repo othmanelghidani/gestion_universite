@@ -69,14 +69,36 @@ public class SessionServiceImpl implements SessionService {
 
     private SessionDto toDto(SessionEntity s) {
         SessionDto dto = new SessionDto();
+
         dto.setId(s.getId());
         dto.setDayOfWeek(s.getDayOfWeek());
         dto.setStartTime(s.getStartTime().toString());
         dto.setEndTime(s.getEndTime().toString());
+
+        // IDs (pour le form)
         dto.setModuleId(s.getModule().getId());
         dto.setGroupId(s.getGroup().getId());
         dto.setTeacherId(s.getTeacher().getId());
         dto.setRoomId(s.getRoom().getId());
+
+        // ✅ Champs d'affichage réels (pour la liste)
+        ModuleEntity module = s.getModule();
+        if (module != null) dto.setModuleName(module.getName());
+
+        GroupEntity group = s.getGroup();
+        if (group != null) dto.setGroupName(group.getName());
+
+        Room room = s.getRoom();
+        if (room != null) dto.setRoomName(room.getName());
+
+        TeacherProfile teacher = s.getTeacher();
+        if (teacher != null) {
+            dto.setTeacherGrade(teacher.getGrade());
+            if (teacher.getUser() != null) {
+                dto.setTeacherEmail(teacher.getUser().getEmail());
+            }
+        }
+
         return dto;
     }
 

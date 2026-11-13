@@ -1,31 +1,116 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${mode == 'edit'} ? 'Modifier Groupe' : 'Créer Groupe'">Groupe</title>
 
-<section>
-  <h2 class="h4 mb-3" th:text="${mode == 'edit'} ? '✏️ Modifier Groupe' : '➕ Créer Groupe'"></h2>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-      <form th:object="${groupDto}"
-            th:action="${mode == 'edit'} ? @{/admin/groups/{id}(id=${groupDto.id})} : @{/admin/groups}"
-            method="post" class="row g-3">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { gold: '#bfa76a' }
+        }
+      }
+    }
+  </script>
+</head>
 
-        <div class="col-md-6">
-          <label class="form-label">Nom</label>
-          <input class="form-control" th:field="*{name}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-        </div>
+<body class="min-h-screen bg-[#0a0a0a] text-neutral-200 p-8">
 
-        <div class="col-12 d-flex gap-2">
-          <button class="btn btn-success" type="submit">Enregistrer</button>
-          <a class="btn btn-secondary" th:href="@{/admin/groups}">Annuler</a>
-        </div>
+<div class="max-w-4xl mx-auto space-y-6">
 
-      </form>
+  <!-- Header -->
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-medium tracking-wide flex items-center gap-2"
+          th:text="${mode == 'edit'} ? '✏️ Modifier Groupe' : '➕ Créer Groupe'">
+        ➕ Créer Groupe
+      </h2>
+      <p class="text-sm text-neutral-500 mt-1">
+        Définis un nom clair (ex: G1, G2, A1...) pour l’utiliser dans les séances.
+      </p>
     </div>
-  </div>
-</section>
 
+    <a th:href="@{/admin/groups}"
+       class="group inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium
+              bg-white/5 border border-white/10 text-neutral-300
+              transition-all duration-300
+              hover:border-gold hover:text-gold hover:bg-gold/5
+              hover:shadow-[0_0_20px_rgba(191,167,106,0.15)]
+              active:scale-[0.98]">
+      <i class="bi bi-arrow-left"></i>
+      Retour
+    </a>
+  </div>
+
+  <!-- Form card -->
+  <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden">
+
+    <div class="px-6 py-4 border-b border-white/10 flex items-center gap-2">
+      <i class="bi bi-pencil-square text-gold"></i>
+      <h3 class="text-base font-medium">Informations</h3>
+    </div>
+
+    <form th:object="${groupDto}"
+          th:action="${mode == 'edit'} ? @{/admin/groups/{id}(id=${groupDto.id})} : @{/admin/groups}"
+          method="post"
+          class="p-6 space-y-5">
+
+      <!-- CSRF (si Spring Security activé) -->
+      <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+      <div>
+        <label class="block text-sm text-neutral-300 mb-2">Nom</label>
+
+        <div class="relative">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+            <i class="bi bi-diagram-3"></i>
+          </span>
+
+          <input class="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-3 py-2.5
+                        text-neutral-100 placeholder:text-neutral-600 outline-none
+                        focus:border-gold/60 focus:ring-2 focus:ring-gold/15 transition"
+                 th:field="*{name}" placeholder="Ex: G1, A2..." required>
+        </div>
+
+        <div class="text-red-300 text-xs mt-2"
+             th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+      </div>
+
+      <div class="flex flex-wrap gap-4">
+        <button type="submit"
+                class="group inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold
+                       bg-white/5 border border-white/10 text-neutral-300
+                       transition-all duration-300
+                       hover:border-gold hover:text-gold hover:bg-gold/5
+                       hover:shadow-[0_0_20px_rgba(191,167,106,0.15)]
+                       active:scale-[0.98]">
+          <i class="bi bi-check2-circle transition-transform duration-300 group-hover:scale-110"></i>
+          Enregistrer
+        </button>
+
+        <a th:href="@{/admin/groups}"
+           class="group inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium
+                  bg-white/5 border border-white/10 text-neutral-300
+                  transition-all duration-300
+                  hover:border-white/20 hover:text-neutral-100 hover:bg-white/10
+                  active:scale-[0.98]">
+          <i class="bi bi-x-circle"></i>
+          Annuler
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
 </html>

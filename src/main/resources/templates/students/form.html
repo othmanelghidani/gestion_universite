@@ -1,68 +1,193 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Étudiant - Formulaire</title>
 
-<section>
-  <div class="mb-3">
-    <h2 class="h4" th:text="${mode == 'edit'} ? '✏️ Modifier Étudiant' : '➕ Créer Étudiant'"></h2>
-  </div>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { gold: '#bfa76a' }
+                }
+            }
+        }
+    </script>
+</head>
 
-      <form th:object="${studentDto}"
-            th:action="${mode == 'edit'} ? @{/admin/students/{id}(id=${studentDto.id})} : @{/admin/students}"
-            method="post" class="row g-3">
+<body class="min-h-screen bg-[#0a0a0a] text-neutral-200 p-8">
 
-        <div class="col-md-6">
-          <label class="form-label">Email</label>
-          <input class="form-control" type="email" th:field="*{email}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+<div class="max-w-4xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-4">
+        <div>
+            <h2 class="text-xl font-medium tracking-wide flex items-center gap-2">
+                <i class="bi bi-person-vcard text-gold"></i>
+                <span th:text="${mode == 'edit'} ? 'Modifier Étudiant' : 'Créer Étudiant'"></span>
+            </h2>
+            <p class="text-sm text-neutral-500 mt-1">
+                Remplis les champs ci-dessous. Le mot de passe est requis à la création.
+            </p>
         </div>
 
-        <div class="col-md-6">
-          <label class="form-label">
-            Mot de passe
-            <span class="text-muted" th:if="${mode=='edit'}">(laisser vide pour ne pas changer)</span>
-          </label>
-          <input class="form-control" type="password" th:field="*{password}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Filière</label>
-          <input class="form-control" th:field="*{filiere}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('filiere')}" th:errors="*{filiere}"></div>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Niveau</label>
-          <input class="form-control" th:field="*{niveau}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('niveau')}" th:errors="*{niveau}"></div>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Groupe</label>
-          <input class="form-control" th:field="*{groupe}">
-          <div class="text-danger small" th:if="${#fields.hasErrors('groupe')}" th:errors="*{groupe}"></div>
-        </div>
-
-        <div class="col-12">
-          <label class="form-label">Compétences (optionnel)</label>
-          <textarea class="form-control" rows="3" th:field="*{competences}"
-                    placeholder="Ex: Java, Spring, SQL"></textarea>
-        </div>
-
-        <div class="col-12 d-flex gap-2">
-          <button class="btn btn-success" type="submit">Enregistrer</button>
-          <a class="btn btn-secondary" th:href="@{/admin/students}">Annuler</a>
-        </div>
-
-      </form>
+        <a th:href="@{/admin/students}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                  border border-white/10 text-neutral-300
+                  hover:border-gold hover:text-gold hover:bg-gold/5
+                  transition-all duration-300">
+            <i class="bi bi-arrow-left"></i>
+            Retour
+        </a>
     </div>
-  </div>
-</section>
 
+    <!-- Error global -->
+    <div th:if="${error}"
+         class="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-300 flex gap-2">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span th:text="${error}"></span>
+    </div>
+
+    <!-- Card -->
+    <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden">
+        <div class="p-6">
+
+            <form th:object="${studentDto}"
+                  th:action="${mode == 'edit'} ? @{/admin/students/{id}(id=${studentDto.id})} : @{/admin/students}"
+                  method="post"
+                  class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <!-- Email -->
+                <div>
+                    <label class="block text-sm text-neutral-400 mb-2">
+                        Email
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+                            <i class="bi bi-envelope"></i>
+                        </span>
+                        <input type="email" th:field="*{email}"
+                               class="w-full rounded-xl bg-black/40 border border-white/10 pl-10 pr-3 py-2.5
+                                      text-neutral-100 placeholder-neutral-600 outline-none
+                                      focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+                    </div>
+
+                    <div class="mt-2 text-xs text-red-300"
+                         th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-sm text-neutral-400 mb-2">
+                        Mot de passe
+                        <span class="text-neutral-500" th:if="${mode=='edit'}">(laisser vide pour ne pas changer)</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input type="password" th:field="*{password}"
+                               class="w-full rounded-xl bg-black/40 border border-white/10 pl-10 pr-3 py-2.5
+                                      text-neutral-100 placeholder-neutral-600 outline-none
+                                      focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+                    </div>
+
+                    <div class="mt-2 text-xs text-red-300"
+                         th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+
+                <!-- Filière -->
+                <div>
+                    <label class="block text-sm text-neutral-400 mb-2">Filière</label>
+                    <input th:field="*{filiere}"
+                           class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                                  text-neutral-100 outline-none
+                                  focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+
+                    <div class="mt-2 text-xs text-red-300"
+                         th:if="${#fields.hasErrors('filiere')}" th:errors="*{filiere}"></div>
+                </div>
+
+                <!-- Niveau -->
+                <div>
+                    <label class="block text-sm text-neutral-400 mb-2">Niveau</label>
+                    <input th:field="*{niveau}"
+                           class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                                  text-neutral-100 outline-none
+                                  focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+
+                    <div class="mt-2 text-xs text-red-300"
+                         th:if="${#fields.hasErrors('niveau')}" th:errors="*{niveau}"></div>
+                </div>
+
+                <!-- Groupe -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm text-neutral-400 mb-2">Groupe</label>
+                    <input th:field="*{groupe}"
+                           placeholder="Ex: G1"
+                           class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                                  text-neutral-100 placeholder-neutral-600 outline-none
+                                  focus:border-gold focus:ring-1 focus:ring-gold/20 transition">
+
+                    <div class="mt-2 text-xs text-red-300"
+                         th:if="${#fields.hasErrors('groupe')}" th:errors="*{groupe}"></div>
+
+                    <p class="mt-2 text-xs text-neutral-500 flex items-start gap-2">
+                        <i class="bi bi-info-circle mt-0.5"></i>
+                        <span>
+                            Le champ <b>Groupe</b> doit correspondre exactement au <b>nom</b> d’un groupe existant
+                            (ex: <code class="px-1 py-0.5 rounded bg-white/5 border border-white/10">G1</code>),
+                            pour afficher l’EDT côté étudiant.
+                        </span>
+                    </p>
+                </div>
+
+                <!-- Competences -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm text-neutral-400 mb-2">Compétences (optionnel)</label>
+                    <textarea rows="3"
+                              th:field="*{competences}"
+                              placeholder="Ex: Java, Spring, SQL"
+                              class="w-full rounded-xl bg-black/40 border border-white/10 px-3 py-2.5
+                                     text-neutral-100 placeholder-neutral-600 outline-none
+                                     focus:border-gold focus:ring-1 focus:ring-gold/20 transition"></textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="md:col-span-2 flex flex-wrap gap-3 pt-2">
+                    <button type="submit"
+                            class="group inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium
+                                   bg-white/5 border border-white/10 text-neutral-200
+                                   transition-all duration-300
+                                   hover:border-gold hover:text-gold hover:bg-gold/5
+                                   hover:shadow-[0_0_20px_rgba(191,167,106,0.15)]
+                                   active:scale-[0.98]">
+                        <i class="bi bi-check2-circle transition-transform duration-300 group-hover:scale-110"></i>
+                        Enregistrer
+                    </button>
+
+                    <a th:href="@{/admin/students}"
+                       class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium
+                              border border-white/10 text-neutral-300
+                              hover:border-gold hover:text-gold hover:bg-gold/5
+                              transition-all duration-300">
+                        <i class="bi bi-x-circle"></i>
+                        Annuler
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+</body>
 </html>

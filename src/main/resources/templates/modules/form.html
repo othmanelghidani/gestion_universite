@@ -1,74 +1,204 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${mode == 'edit'} ? 'Modifier Module' : 'Nouveau Module'">Module</title>
 
-<section>
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h4 mb-0" th:text="${mode == 'edit'} ? '✏️ Modifier Module' : '➕ Nouveau Module'"></h2>
-    <a class="btn btn-outline-secondary" th:href="@{/admin/modules}">Retour</a>
-  </div>
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { gold: '#bfa76a' }
+        }
+      }
+    }
+  </script>
+</head>
 
-      <form th:object="${moduleDto}"
-            th:action="${mode == 'edit'} ? @{/admin/modules/{id}(id=${moduleDto.id})} : @{/admin/modules}"
-            method="post" class="row g-3">
+<body class="min-h-screen bg-[#0a0a0a] text-neutral-200 p-8">
 
-        <div class="col-md-6">
-          <label class="form-label">Nom</label>
-          <input class="form-control" th:field="*{name}" placeholder="Ex: Programmation Java">
-          <div class="text-danger small" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
-        </div>
+<div class="max-w-5xl mx-auto space-y-6">
 
-        <div class="col-md-6">
-          <label class="form-label">Filière</label>
-          <input class="form-control" th:field="*{filiere}" placeholder="Ex: Big Data / IA">
-          <div class="text-danger small" th:if="${#fields.hasErrors('filiere')}" th:errors="*{filiere}"></div>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Semestre</label>
-          <input class="form-control" th:field="*{semestre}" placeholder="Ex: S2">
-          <div class="text-danger small" th:if="${#fields.hasErrors('semestre')}" th:errors="*{semestre}"></div>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Volume horaire</label>
-          <input type="number" min="0" class="form-control" th:field="*{volumeHoraire}" placeholder="Ex: 30">
-          <div class="text-danger small" th:if="${#fields.hasErrors('volumeHoraire')}" th:errors="*{volumeHoraire}"></div>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Responsable (Enseignant)</label>
-          <select class="form-select" th:field="*{responsibleTeacherId}">
-            <option value="">— Aucun —</option>
-            <option th:each="t : ${teachers}"
-                    th:value="${t.id}"
-                    th:text="${t.user != null ? t.user.email : ('Teacher #' + t.id)}">
-            </option>
-          </select>
-          <div class="text-danger small" th:if="${#fields.hasErrors('responsibleTeacherId')}" th:errors="*{responsibleTeacherId}"></div>
-        </div>
-
-        <div class="col-12">
-          <label class="form-label">Compétences requises</label>
-          <textarea class="form-control" rows="4" th:field="*{competencesRequises}"
-                    placeholder="Ex: POO, Collections, Streams..."></textarea>
-          <div class="text-danger small" th:if="${#fields.hasErrors('competencesRequises')}" th:errors="*{competencesRequises}"></div>
-        </div>
-
-        <div class="col-12 d-flex gap-2">
-          <button class="btn btn-success" type="submit">Enregistrer</button>
-          <a class="btn btn-secondary" th:href="@{/admin/modules}">Annuler</a>
-        </div>
-
-      </form>
-
+  <!-- Header -->
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <h2 class="text-xl font-medium tracking-wide flex items-center gap-2"
+          th:text="${mode == 'edit'} ? '✏️ Modifier Module' : '➕ Nouveau Module'">
+        ➕ Nouveau Module
+      </h2>
+      <p class="text-sm text-neutral-500 mt-1">
+        Renseigne les informations du module et (optionnel) son enseignant responsable.
+      </p>
     </div>
-  </div>
-</section>
 
+    <a th:href="@{/admin/modules}"
+       class="group inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium
+              bg-white/5 border border-white/10 text-neutral-300
+              transition-all duration-300
+              hover:border-gold hover:text-gold hover:bg-gold/5
+              hover:shadow-[0_0_20px_rgba(191,167,106,0.15)]
+              active:scale-[0.98]">
+      <i class="bi bi-arrow-left"></i>
+      Retour
+    </a>
+  </div>
+
+  <!-- Error -->
+  <div th:if="${error}"
+       class="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-300 flex gap-2">
+    <i class="bi bi-exclamation-triangle-fill"></i>
+    <span th:text="${error}"></span>
+  </div>
+
+  <!-- Form card -->
+  <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden">
+
+    <div class="px-6 py-4 border-b border-white/10 flex items-center gap-2">
+      <i class="bi bi-pencil-square text-gold"></i>
+      <h3 class="text-base font-medium">Informations du module</h3>
+    </div>
+
+    <form th:object="${moduleDto}"
+          th:action="${mode == 'edit'} ? @{/admin/modules/{id}(id=${moduleDto.id})} : @{/admin/modules}"
+          method="post"
+          class="p-6 space-y-6">
+
+      <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+      <!-- Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <div>
+          <label class="block text-sm text-neutral-300 mb-2">Nom</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+              <i class="bi bi-journal-text"></i>
+            </span>
+            <input class="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-3 py-2.5
+                          text-neutral-100 placeholder:text-neutral-600 outline-none
+                          focus:border-gold/60 focus:ring-2 focus:ring-gold/15 transition"
+                   th:field="*{name}" placeholder="Ex: Programmation Java">
+          </div>
+          <div class="text-red-300 text-xs mt-2"
+               th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300 mb-2">Filière</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+              <i class="bi bi-diagram-3"></i>
+            </span>
+            <input class="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-3 py-2.5
+                          text-neutral-100 placeholder:text-neutral-600 outline-none
+                          focus:border-gold/60 focus:ring-2 focus:ring-gold/15 transition"
+                   th:field="*{filiere}" placeholder="Ex: Big Data / IA">
+          </div>
+          <div class="text-red-300 text-xs mt-2"
+               th:if="${#fields.hasErrors('filiere')}" th:errors="*{filiere}"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300 mb-2">Semestre</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+              <i class="bi bi-calendar3"></i>
+            </span>
+            <input class="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-3 py-2.5
+                          text-neutral-100 placeholder:text-neutral-600 outline-none
+                          focus:border-gold/60 focus:ring-2 focus:ring-gold/15 transition"
+                   th:field="*{semestre}" placeholder="Ex: S2">
+          </div>
+          <div class="text-red-300 text-xs mt-2"
+               th:if="${#fields.hasErrors('semestre')}" th:errors="*{semestre}"></div>
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300 mb-2">Volume horaire</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+              <i class="bi bi-hourglass-split"></i>
+            </span>
+            <input type="number" min="0"
+                   class="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-3 py-2.5
+                          text-neutral-100 placeholder:text-neutral-600 outline-none
+                          focus:border-gold/60 focus:ring-2 focus:ring-gold/15 transition"
+                   th:field="*{volumeHoraire}" placeholder="Ex: 30">
+          </div>
+          <div class="text-red-300 text-xs mt-2"
+               th:if="${#fields.hasErrors('volumeHoraire')}" th:errors="*{volumeHoraire}"></div>
+        </div>
+
+        <div class="md:col-span-2">
+          <label class="block text-sm text-neutral-300 mb-2">Responsable (Enseignant)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-neutral-500">
+              <i class="bi bi-person-video3"></i>
+            </span>
+
+            <select class="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-3 py-2.5
+                           text-neutral-100 outline-none
+                           focus:border-gold/60 focus:ring-2 focus:ring-gold/15 transition"
+                    th:field="*{responsibleTeacherId}">
+              <option value="">— Aucun —</option>
+              <option th:each="t : ${teachers}"
+                      th:value="${t.id}"
+                      th:text="${t.user != null ? t.user.email : ('Teacher #' + t.id)}">
+              </option>
+            </select>
+          </div>
+          <div class="text-red-300 text-xs mt-2"
+               th:if="${#fields.hasErrors('responsibleTeacherId')}" th:errors="*{responsibleTeacherId}"></div>
+        </div>
+
+      </div>
+
+      <div>
+        <label class="block text-sm text-neutral-300 mb-2">Compétences requises</label>
+        <textarea rows="4"
+                  class="w-full rounded-xl bg-white/5 border border-white/10 px-3 py-2.5
+                         text-neutral-100 placeholder:text-neutral-600 outline-none
+                         focus:border-gold/60 focus:ring-2 focus:ring-gold/15 transition"
+                  th:field="*{competencesRequises}"
+                  placeholder="Ex: POO, Collections, Streams..."></textarea>
+        <div class="text-red-300 text-xs mt-2"
+             th:if="${#fields.hasErrors('competencesRequises')}" th:errors="*{competencesRequises}"></div>
+      </div>
+
+      <div class="flex flex-wrap gap-4">
+        <button type="submit"
+                class="group inline-flex items-center gap-2 px-4 py-2 rounded-xl font-semibold
+                       bg-white/5 border border-white/10 text-neutral-300
+                       transition-all duration-300
+                       hover:border-gold hover:text-gold hover:bg-gold/5
+                       hover:shadow-[0_0_20px_rgba(191,167,106,0.15)]
+                       active:scale-[0.98]">
+          <i class="bi bi-check2-circle transition-transform duration-300 group-hover:scale-110"></i>
+          Enregistrer
+        </button>
+
+        <a th:href="@{/admin/modules}"
+           class="group inline-flex items-center gap-2 px-4 py-2 rounded-xl font-medium
+                  bg-white/5 border border-white/10 text-neutral-300
+                  transition-all duration-300
+                  hover:border-white/20 hover:text-neutral-100 hover:bg-white/10
+                  active:scale-[0.98]">
+          <i class="bi bi-x-circle"></i>
+          Annuler
+        </a>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+
+</body>
 </html>

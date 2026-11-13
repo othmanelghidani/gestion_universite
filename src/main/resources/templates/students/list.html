@@ -1,54 +1,118 @@
 <!DOCTYPE html>
-<html lang="fr" xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout/base :: layout(~{::section})">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Étudiants</title>
 
-<section>
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="h4 mb-0">🎓 Gestion des Étudiants</h2>
-    <a class="btn btn-primary" th:href="@{/admin/students/new}">+ Nouvel étudiant</a>
-  </div>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-  <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-  <div class="card shadow-sm">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-striped align-middle">
-          <thead>
-          <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Filière</th>
-            <th>Niveau</th>
-            <th>Groupe</th>
-            <th>Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="s : ${students}">
-            <td th:text="${s.id}"></td>
-            <td th:text="${s.email}"></td>
-            <td th:text="${s.filiere}"></td>
-            <td th:text="${s.niveau}"></td>
-            <td th:text="${s.groupe}"></td>
-            <td class="d-flex gap-2">
-              <a class="btn btn-sm btn-outline-secondary"
-                 th:href="@{/admin/students/{id}/edit(id=${s.id})}">Modifier</a>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#bfa76a'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
 
-              <form th:action="@{/admin/students/{id}/delete(id=${s.id})}" method="post"
-                    onsubmit="return confirm('Supprimer cet étudiant ?');">
-                <button class="btn btn-sm btn-outline-danger" type="submit">Supprimer</button>
-              </form>
-            </td>
-          </tr>
-          <tr th:if="${#lists.isEmpty(students)}">
-            <td colspan="6" class="text-center text-muted">Aucun étudiant</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+<body class="min-h-screen bg-[#0a0a0a] text-neutral-200 p-8">
+
+<div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between">
+        <h2 class="text-xl font-medium tracking-wide flex items-center gap-2">
+            <i class="bi bi-mortarboard text-gold"></i>
+            Gestion des Étudiants
+        </h2>
+
+        <a th:href="@{/admin/students/new}"
+           class="group inline-flex items-center gap-2 px-4 py-2 rounded-lg
+                  border border-white/10 text-neutral-300
+                  hover:border-gold hover:text-gold hover:bg-gold/5
+                  transition-all duration-300">
+            <i class="bi bi-plus-lg transition-transform group-hover:rotate-90"></i>
+            Nouvel étudiant
+        </a>
     </div>
-  </div>
-</section>
 
+    <!-- Success message -->
+    <div th:if="${success}"
+         class="rounded-lg border border-gold/20 bg-gold/5 px-4 py-3 text-sm text-gold flex gap-2">
+        <i class="bi bi-check-circle-fill"></i>
+        <span th:text="${success}"></span>
+    </div>
+
+    <!-- Table card -->
+    <div class="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md overflow-hidden">
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-white/5 border-b border-white/10 text-neutral-400">
+                <tr>
+                    <th class="px-4 py-3 text-left">ID</th>
+                    <th class="px-4 py-3 text-left">Email</th>
+                    <th class="px-4 py-3 text-left">Filière</th>
+                    <th class="px-4 py-3 text-left">Niveau</th>
+                    <th class="px-4 py-3 text-left">Groupe</th>
+                    <th class="px-4 py-3 text-left">Actions</th>
+                </tr>
+                </thead>
+
+                <tbody class="divide-y divide-white/5">
+
+                <tr th:each="s : ${students}"
+                    class="hover:bg-white/5 transition">
+                    <td class="px-4 py-3" th:text="${s.id}"></td>
+                    <td class="px-4 py-3" th:text="${s.email}"></td>
+                    <td class="px-4 py-3" th:text="${s.filiere}"></td>
+                    <td class="px-4 py-3" th:text="${s.niveau}"></td>
+                    <td class="px-4 py-3" th:text="${s.groupe}"></td>
+
+                    <td class="px-4 py-3 flex gap-3">
+
+                        <!-- Edit -->
+                        <a th:href="@{/admin/students/{id}/edit(id=${s.id})}"
+                           class="group inline-flex items-center gap-1 text-neutral-400 hover:text-gold transition">
+                            <i class="bi bi-pencil transition-transform group-hover:-rotate-6"></i>
+                            Modifier
+                        </a>
+
+                        <!-- Delete -->
+                        <form th:action="@{/admin/students/{id}/delete(id=${s.id})}"
+                              method="post"
+                              onsubmit="return confirm('Supprimer cet étudiant ?');">
+                            <button type="submit"
+                                    class="group inline-flex items-center gap-1 text-neutral-500 hover:text-red-400 transition">
+                                <i class="bi bi-trash transition-transform group-hover:scale-110"></i>
+                                Supprimer
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                <!-- Empty -->
+                <tr th:if="${#lists.isEmpty(students)}">
+                    <td colspan="6" class="px-4 py-6 text-center text-neutral-500">
+                        Aucun étudiant enregistré.
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
 </html>
